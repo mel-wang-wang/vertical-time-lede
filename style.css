@@ -1,29 +1,13 @@
 body {
-    margin: auto;
-    width: 50%;
-    background-color: #00004d;
-   
+    background-color: black;
 }
 
 .tick line {
     visibility: hidden;
 }
 
-#my_dataviz {
-    position: -webkit-sticky;
-    position: sticky;
-    left: 0;
-    width: 100%;
-    margin: 0;
-    -webkit-transform: translate3d(0, 0, 0);
-    -moz-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    z-index: 0;
-}
-
 #scroll {
     position: relative;
-    padding: 1rem;
 }
 
 article {
@@ -31,12 +15,11 @@ article {
 }
 
 .step {
-    margin: 0 auto 0 auto;
-    margin-bottom: 10%;
-    max-height: 200px;
-    width: 60%;
-    background-color: #2B2F77;
-    opacity: 0.6;
+ 
+  
+    max-height: 150px;
+    
+   
 }
 
 .step:last-child {
@@ -45,21 +28,13 @@ article {
 
 
 .step p {
-    text-align: justify;
-    padding: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     font-size: 16px;
     line-height: 1.6;
     font-family: Arial, Helvetica, sans-serif;
     color: white;
 }
 
-#my_dataviz {
-    position: absolute;
-}
-
-#background {
-    position: absolute;
-    height: 2500px;
-    /*width: 950px;*/
-    width: 100%;
-}
