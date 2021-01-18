@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='style.css'>
+</head>
+
+<body>
+  <img src = "Untitled-1.png" id = "background">
+    <section id="scroll">
+        <div id="my_dataviz">
+            
+        </div>
+       
+        <article>
+            <div class="step" data-step="1"  style="opacity:0">
+                <p>Spectator Graphics visualized the number of undergraduate courses ending at each hour in GMT+8,
+                    the
+                    timezone local to Chinese, Singaporean, Malaysian and Filipino students who make up the majority
+                    of
+                    Columbia's international student population.
+                </p>
+            </div>
+            <div class="step" data-step="2"  style="opacity:0">
+                <p>~12pm: Out of the [] undergraduate classes during the Fall 2020 semester, only [] ended between
+                    []
+                    and [] for those in GMT+8.</p>
+            </div>
+            <div class="step" data-step="3"  style="opacity:0">
+                <p>
+                    6pm: "Right after I woke up, I'd have to go eat dinner with them."
+                </p>
+            </div>
+            <div class="step" data-step="4" style="opacity:0">
+                <p>
+                    10pm: "My final was at 9:30 in the night, which is not okay."
+                </p>
+            </div>
+            <div class="step" data-step="5" style="opacity:0">
+                <p>
+                    12am: Columbia's semesterly career fair, a chance for students to secure future jobs and
+                    internships, began at 10pm and ended at 3am. The Beyond Barnard Opportunities Fair went from
+                    12am to 4pm.
+
+                </p>
+            </div>
+            <div class="step" data-step="6" style="opacity:0">
+                <p>
+                    1am: The busiest hour occurs between [] and [], during which [] classes conclude.
+                </p>
+            </div>
+            <div class="step" data-step="7" style="opacity:0">
+                <p>
+                    3am: Participation is difficult when "you're just trying to stay awake and take some notes."
+                </p>
+            </div>
+            <div class="step" data-step="8" style="opacity:0">
+                <p>
+                    4am: Social events such as Barnard's Millie Meets often happened at 4am.
+                </p>
+            </div>
+            <div class="step" data-step="9" style="opacity:0">
+                <p>
+                    5am: "I was absolutely fried, my brain was not working. Like, I had video off, mute."
+                </p>
+            </div>
+            <div class="step" data-step="10" style="opacity:0">
+                <p>
+                    6am: "It was very dark, and the house would get very, very quiet. I would start to stand on my
+                    balcony outside. Hear the occasional car drive by."
+                </p>
+            </div>
+            <div class="step" data-step="11" style="opacity:0">
+                <p>
+                    7am: [] classes conclude as the sun rises between 7am and 8am.
+                </p>
+            </div>
+        </article>
+       
+    </section>
+
+
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/2.2.1/scrollama.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js"></script>
+    <script>
+        var margin = { top: 20, right: 30, bottom: 40, left: 90 },
+            width = 940 - margin.left - margin.right,
+            height = 2060 - margin.top - margin.bottom;
+
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip").style("opacity", 0);
+
+
+        //append svg
+        var svg = d3.select("#my_dataviz")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        d3.csv("horizontal.csv", function (data) {
+
+            //add x axis
+            var x = d3.scaleLinear()
+                .domain([0, 500])
+                .range([0, width]);
+
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).ticks(8, ".0f"))
+                .call(g => g.select(".domain").remove())
+                .selectAll("text")
+                .attr("fill", "#D2D2D2")
+                .attr("font-size", "13")
+                .attr("font-family", "Roboto")
+                .style("text-anchor", "end")
+                .selectAll(".domain").remove();
+
+            //add y axis
+            var y = d3.scaleBand()
+                .range([0, height])
+                .domain(data.map(function (d) { return d.EndTime; }))
+                .padding(0);
+
+
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(8, "$.0f"))
+                .call(g => g.select(".domain").remove())
+                .selectAll("text")
+                .attr("fill", "#D2D2D2")
+                .attr("font-size", "13")
+                .attr("font-family", "Roboto")
+                .style("text-anchor", "end")
+
+            //bars
+            svg.selectAll("myRect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("x", x(0))
+                .attr("class", "bar")
+                .attr("y", function (d) { return y(d.EndTime); })
+                .attr("width", function (d) { return x(d.Frequency); })
+                .attr("height", y.bandwidth())
+                .style("fill", "#78b3e0")
+                .attr("opacity", "90%");
+
+        });
+    </script>
+    <script>
+        var main = d3.select("main");
+        var scroll = main.select("#scroll");
+        var diagram = scroll.select("#my_dataviz");
+        var article = scroll.select("article");
+        var step = article.selectAll(".step");
+
+        var scroller = scrollama();
+
+        function handleResize() {
+            //update height of steps
+            var stepHeight = Math.floor(window.innerHeight * 0.75);
+            step.style("height", stepHeight + "px");
+
+            var diagramHeight = window.innerHeight / 2;
+            var diagramMarginTop = (window.innerHeight - diagramHeight) / 6;
+
+            diagram
+                .style("height", diagramHeight + "px")
+                .style("top", diagramMarginTop + "px");
+
+            //update new element dimensions
+            scroller.resize();
+        }
+        
+        function handleStepEnter(response) {
+            console.log("working");
+       
+            response.element.style.opacity = 1;
+        }
+
+       function handleStepExit(response) {
+            if (response.direction === "up") {
+               
+                response.element.style.opacity = 0;
+            }
+           
+
+        }
+        
+
+        function stepupStickyfill() {
+            d3.selectAll(".sticky").each(function () {
+                Stickyfill.add(this);
+            })
+        }
+
+        function init() {
+            stepupStickyfill();
+            handleResize();
+
+            scroller
+                .setup({
+                    step: "#scroll article .step",
+                    offset: 0.2,
+                    debug: true
+                })
+                .onStepEnter(handleStepEnter)
+                .onStepExit(handleStepExit);
+
+            window.addEventListener("resize", handleResize);
+        }
+
+        //light em up
+        init();
+    </script>
+</body>
+
+</html>

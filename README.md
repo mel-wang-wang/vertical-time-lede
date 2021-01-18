@@ -1,1 +1,1 @@
-# vertical-time-lede
+# horizontal-time-zone-lede
